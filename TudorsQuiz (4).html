@@ -1,0 +1,304 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tudor Monarchs Flash Cards</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3eee5;
+      color: #2c241f;
+      text-align: center;
+    }
+
+    header {
+      background: #6b1f2a;
+      color: white;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      margin: 0 0 0.5rem;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .controls {
+      margin: 1.5rem auto;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 6px;
+      padding: 0.75rem 1.25rem;
+      background: #6b1f2a;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #4e1620;
+    }
+
+    .card-container {
+      width: min(90%, 600px);
+      height: 280px;
+      margin: 2rem auto;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+    }
+
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-side {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      padding: 2rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      backface-visibility: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .front {
+      background: #fffaf0;
+      border: 4px solid #c59b44;
+    }
+
+    .back {
+      background: #ead8b7;
+      border: 4px solid #6b1f2a;
+      transform: rotateY(180deg);
+    }
+
+    .card-side h2 {
+      margin-top: 0;
+      color: #6b1f2a;
+    }
+
+    .card-side p {
+      font-size: 1.2rem;
+      line-height: 1.5;
+    }
+
+    #counter {
+      font-weight: bold;
+      margin: 1rem;
+    }
+
+    .memory-tip {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: #fffaf0;
+      border-left: 5px solid #c59b44;
+      text-align: left;
+    }
+
+    footer {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #2c241f;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Tudor Monarchs Flash Cards</h1>
+    <p class="subtitle">The Tudor rulers of England, 1485–1603</p>
+  </header>
+
+  <main>
+    <div class="controls">
+      <button onclick="previousCard()">Previous</button>
+      <button onclick="flipCard()">Flip Card</button>
+      <button onclick="nextCard()">Next</button>
+      <button onclick="shuffleCards()">Shuffle</button>
+    </div>
+
+    <p id="counter"></p>
+
+    <div class="card-container" onclick="flipCard()">
+      <div class="card" id="flashcard">
+        <div class="card-side front">
+          <h2 id="question"></h2>
+          <p>Click the card to reveal the answer.</p>
+        </div>
+
+        <div class="card-side back">
+          <h2>Answer</h2>
+          <p id="answer"></p>
+        </div>
+      </div>
+    </div>
+
+    <section class="memory-tip">
+      <h2>Order to Remember</h2>
+      <p>
+        <strong>Henry VII → Henry VIII → Edward VI → Mary I → Elizabeth I</strong>
+      </p>
+      <p>
+        Mnemonic: <strong>“Henry Hiked Every Mountain Eventually.”</strong>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Henry VII, Henry VIII, Edward VI, Mary I, and Elizabeth I</p>
+  </footer>
+
+  <script>
+    const cards = [
+      {
+        question: "Who was the first Tudor monarch?",
+        answer: "Henry VII."
+      },
+      {
+        question: "When did Henry VII reign?",
+        answer: "1485–1509."
+      },
+      {
+        question: "How did Henry VII become king?",
+        answer: "He defeated Richard III at the Battle of Bosworth Field in 1485, ending the Wars of the Roses."
+      },
+      {
+        question: "Who succeeded Henry VII?",
+        answer: "His son, Henry VIII."
+      },
+      {
+        question: "When did Henry VIII reign?",
+        answer: "1509–1547."
+      },
+      {
+        question: "What is Henry VIII best known for?",
+        answer: "Having six wives and breaking with Rome, beginning the English Reformation."
+      },
+      {
+        question: "Who succeeded Henry VIII?",
+        answer: "His son, Edward VI."
+      },
+      {
+        question: "When did Edward VI reign?",
+        answer: "1547–1553."
+      },
+      {
+        question: "What was significant about Edward VI’s reign?",
+        answer: "England became more firmly Protestant."
+      },
+      {
+        question: "Who succeeded Edward VI?",
+        answer: "His cousin, Mary I."
+      },
+      {
+        question: "When did Mary I reign?",
+        answer: "1553–1558."
+      },
+      {
+        question: "What is Mary I remembered for?",
+        answer: "Restoring Catholicism and persecuting Protestant opponents. She became known as “Bloody Mary.”"
+      },
+      {
+        question: "Who succeeded Mary I?",
+        answer: "Her half-sister, Elizabeth I."
+      },
+      {
+        question: "When did Elizabeth I reign?",
+        answer: "1558–1603."
+      },
+      {
+        question: "What is Elizabeth I’s reign known as?",
+        answer: "The Elizabethan Age, including cultural growth, exploration, and the defeat of the Spanish Armada in 1588."
+      },
+      {
+        question: "Who was the last Tudor monarch?",
+        answer: "Elizabeth I."
+      },
+      {
+        question: "What happened when Elizabeth I died?",
+        answer: "The Tudor dynasty ended, and James VI of Scotland became James I of England."
+      }
+    ];
+
+    let currentCard = 0;
+
+    const flashcard = document.getElementById("flashcard");
+    const question = document.getElementById("question");
+    const answer = document.getElementById("answer");
+    const counter = document.getElementById("counter");
+
+    function displayCard() {
+      flashcard.classList.remove("flipped");
+      question.textContent = cards[currentCard].question;
+      answer.textContent = cards[currentCard].answer;
+      counter.textContent = `Card ${currentCard + 1} of ${cards.length}`;
+    }
+
+    function flipCard() {
+      flashcard.classList.toggle("flipped");
+    }
+
+    function nextCard() {
+      currentCard = (currentCard + 1) % cards.length;
+      displayCard();
+    }
+
+    function previousCard() {
+      currentCard = (currentCard - 1 + cards.length) % cards.length;
+      displayCard();
+    }
+
+    function shuffleCards() {
+      cards.sort(() => Math.random() - 0.5);
+      currentCard = 0;
+      displayCard();
+    }
+
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "ArrowRight") {
+        nextCard();
+      } else if (event.key === "ArrowLeft") {
+        previousCard();
+      } else if (event.key === " " || event.key === "Enter") {
+        flipCard();
+      }
+    });
+
+    displayCard();
+  </script>
+</body>
+</html>
+```
+
+Save it as **`tudor-flashcards.html`**, then open it in a web browser.
